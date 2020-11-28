@@ -16,7 +16,7 @@ class CreateCVJobResponsibilitiesTable extends Migration
     {
         Schema::create('cv_job_responsibilities', function (Blueprint $table) {
             $table->id();
-            $table->string('responsibility');
+            $table->string('responsibility')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));
 

@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CvJobResponsibilities extends Model
+class CvJobAchievement extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
 }

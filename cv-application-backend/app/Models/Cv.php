@@ -21,11 +21,16 @@ class Cv extends Model
 
     public function education()
     {
-        return $this->hasOne(CvEducation::class);
+        return $this->hasMany(CvEducation::class);
     }
 
     public function jobs()
     {
-        return $this->hasMany(CvJobs::class);
+        return $this->hasMany(CvJob::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(CvAddress::class);
     }
 }

@@ -147,6 +147,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'postal_code' => 'postal_code',
+        'house_number' => 'house_number'
+    ],
 
 ];

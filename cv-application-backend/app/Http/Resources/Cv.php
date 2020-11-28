@@ -16,13 +16,17 @@ class Cv extends JsonResource
     {
         return [
             'id' => $this->id,
-            'base data' => $this->baseData,
-            'education' => $this->education,
-            'job experience' => $this->jobs->load([
+            'document_name' => $this->document_name,
+            'base_data' => $this->baseData,
+            'education' => $this->education->all(),
+            'address' => $this->address,
+            'jobs' => $this->jobs->load([
                 'jobInfo',
                 'jobResponsibilities',
                 'jobAchievements'
             ]),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

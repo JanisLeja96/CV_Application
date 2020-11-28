@@ -10,4 +10,5 @@ class CvJobInfo extends Model
     use HasFactory;
 
     protected $table = 'cv_job_info';
+    protected $guarded = [];
 }

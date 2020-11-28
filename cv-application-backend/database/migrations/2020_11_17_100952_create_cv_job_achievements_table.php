@@ -16,7 +16,7 @@ class CreateCVJobAchievementsTable extends Migration
     {
         Schema::create('cv_job_achievements', function (Blueprint $table) {
             $table->id();
-            $table->string('achievement');
+            $table->string('achievement')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));
 

@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/documents', [CvController::class, 'index']);
-Route::get('/documents/{id}', [CvController::class, 'show']);
+//Route::get('/documents', [CvController::class, 'index']);
+//Route::get('/documents/{id}', [CvController::class, 'show']);
+//Route::post('/documents/new', [CvController::class, 'store']);
 
+Route::apiResource('documents', CvController::class);

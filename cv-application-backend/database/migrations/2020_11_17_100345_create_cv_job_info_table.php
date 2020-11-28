@@ -16,7 +16,7 @@ class CreateCVJobInfoTable extends Migration
     {
         Schema::create('cv_job_info', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));
 

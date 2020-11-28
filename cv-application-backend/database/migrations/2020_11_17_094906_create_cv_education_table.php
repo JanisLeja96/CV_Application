@@ -16,12 +16,12 @@ class CreateCVEducationTable extends Migration
     {
         Schema::create('cv_education', function (Blueprint $table) {
             $table->id();
-            $table->string('institution');
-            $table->string('faculty');
-            $table->string('field_of_study');
-            $table->string('level_of_education');
-            $table->string('status');
-            $table->timestamp('started_at');
+            $table->string('institution')->nullable();
+            $table->string('faculty')->nullable();
+            $table->string('field_of_study')->nullable();
+            $table->string('level_of_education')->nullable();
+            $table->string('status')->nullable();
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));

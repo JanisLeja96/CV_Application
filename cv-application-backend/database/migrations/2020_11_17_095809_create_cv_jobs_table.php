@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCVJobExperienceTable extends Migration
+class CreateCVJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,10 +16,11 @@ class CreateCVJobExperienceTable extends Migration
     {
         Schema::create('cv_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('company_title');
-            $table->string('position');
-            $table->string('workload');
-            $table->timestamp('started_at');
+            $table->string('company_title')->nullable();
+            $table->string('position')->nullable();
+            $table->string('workload')->nullable();
+            $table->text('description');
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));
