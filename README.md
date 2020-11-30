@@ -17,6 +17,7 @@ For setting up the front-end: [see here](https://github.com/JanisLeja96/CV_Appli
 ## Further development
 
 - Add option to edit/update existing CVs
+- Add option to choose between multiple CV templates
 - Add option to create custom sections
 - Add additional pre-defined sections
 - Fix dates not appearing properly
