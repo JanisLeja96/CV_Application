@@ -8,7 +8,6 @@ class CvService
 {
     private $cvRepository;
 
-    // TODO - Dependency Injection
     public function __construct($data, $id = null)
     {
         $this->cvRepository = new CvRepository($data, $id);
