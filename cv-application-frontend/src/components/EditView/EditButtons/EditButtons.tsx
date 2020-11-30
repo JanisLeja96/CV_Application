@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, {FC} from 'react';
 import Button from 'react-bootstrap/esm/Button';
 import {Link} from "react-router-dom";
 
@@ -14,6 +14,6 @@ export const EditButtons: FC<Props> = (props) => {
             <Link to="/">
                 <Button className="w-24 h-16 rounded-xl bg-red-700">Cancel</Button>
             </Link>
-          </div>
+        </div>
     )
 }

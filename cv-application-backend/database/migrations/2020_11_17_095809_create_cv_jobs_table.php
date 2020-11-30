@@ -16,11 +16,11 @@ class CreateCVJobsTable extends Migration
     {
         Schema::create('cv_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('company_title')->nullable();
-            $table->string('position')->nullable();
-            $table->string('workload')->nullable();
+            $table->string('company_title');
+            $table->string('position');
+            $table->string('workload');
             $table->text('description');
-            $table->timestamp('started_at')->nullable();
+            $table->timestamp('started_at');
             $table->timestamp('ended_at')->nullable();
             $table->timestamp('created_at')->default(DB::raw('NOW()'));
             $table->timestamp('updated_at')->default(DB::raw('NOW()'));

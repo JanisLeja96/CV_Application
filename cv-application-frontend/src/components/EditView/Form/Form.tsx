@@ -7,29 +7,68 @@ import axios from "axios";
 import {useHistory} from "react-router";
 import {toast} from "react-toastify";
 import {InputTemplate} from "../../../assets/InputTemplate/InputTemplate";
+import {BaseDataInputs} from "./Inputs/BaseDataInputs";
+import {AddressInputs} from "./Inputs/AddressInputs";
+import {WorkPlaceInputs} from "./Inputs/WorkPlaceInputs";
+import {DocumentType} from "../../../types/DocumentType";
+import config from "../../../config.json";
+
 
 type Props = {
     modalShown: boolean
     hideModal: () => void
+    document?: DocumentType
 }
 
 export const Form: FC<Props> = (props) => {
-    const {register, handleSubmit, watch} = useForm();
+    const {register, handleSubmit, errors} = useForm({
+        mode: "onBlur"
+    });
     const [inputFields, setInputFields] = useState({...InputTemplate});
     const history = useHistory();
 
-    const onSubmit = () => {
-        console.log(inputFields);
-        axios.post('http://localhost:8000/api/documents', inputFields)
+    useEffect(() => {
+        if(props.document) {
+            // @ts-ignore
+            setInputFields(...props.document);
+        }
+    })
+
+    const onSubmit = (data: any) => {
+        const fieldsToSubmit = {...inputFields, education: [...data.education], jobs: [...data.jobs]};
+        console.log(fieldsToSubmit);
+        if (!props.document) {
+            storeDocument(fieldsToSubmit);
+        } else {
+            updateDocument(fieldsToSubmit);
+    }
+
+    }
+
+    const storeDocument = (fields: any) => {
+        axios.post(config.SERVER_URL, fields)
             .then(() => {
                 history.push('/');
-                toast('Changes saved');
+                toast('Document created');
             })
             .catch(() => {
                 props.hideModal();
                 toast('An error occurred');
             })
     }
+
+    const updateDocument = (fields: any) => {
+        axios.put(`http://localhost:8000/api/documents/${props.document?.id}`)
+            .then(() => {
+                history.push(`/${props.document?.id}/view`);
+                toast('Changes saved!')
+            })
+            .catch(() => {
+                props.hideModal();
+                toast('An error occurred');
+            })
+    }
+
 
     const handleAddWorkplace = () => {
         const newInputs = {
@@ -40,7 +79,23 @@ export const Form: FC<Props> = (props) => {
             ]
         }
         setInputFields(newInputs);
-        console.log(InputTemplate);
+    }
+
+    const handleAddEducation = () => {
+        const newInputs = {
+            ...inputFields,
+            education: [
+                ...inputFields.education,
+                ...InputTemplate.education
+            ]
+        }
+        setInputFields(newInputs);
+    }
+
+    const handleAddJobResponsibility = (index: number) => {
+        const newInputs = {...inputFields};
+        newInputs.jobs[index].job_responsibilities.push({responsibility: ''});
+        setInputFields(newInputs);
     }
 
     const handleDocumentNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,13 +128,24 @@ export const Form: FC<Props> = (props) => {
         setInputFields(newFields);
     }
 
-    const handleWorkPlaceInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const newFields = {...inputFields};
+    const handleWorkPlaceInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let newFields = {...inputFields};
 
         // @ts-ignore
-        newFields.jobs[index].data[e.target.name] = e.target.value;
+        newFields[`${e.target.name}`] = e.target.value;
+
         setInputFields(newFields);
     }
+
+    const handleEducationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let newFields = {...inputFields};
+
+        // @ts-ignore
+        newFields[`${e.target.name}`] = e.target.value;
+
+        setInputFields(newFields);
+    }
+
 
     return (
         <form id="documentForm" onSubmit={handleSubmit(onSubmit)} className="w-11/12 mt-8">
@@ -89,9 +155,12 @@ export const Form: FC<Props> = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <fieldset name="modalInput">
-                        <input onChange={event => handleDocumentNameInput(event)} ref={register} name="document_name"
+                        <input onChange={event => handleDocumentNameInput(event)} ref={register({required: true})}
+                               name="document_name"
                                type="text"
-                               placeholder="Enter file name..."></input>
+                               placeholder="Enter file name..."
+                                value={props.document?.document_name}/>
+                        {errors.document_name && "This field is required"}
                     </fieldset>
                 </Modal.Body>
                 <Modal.Footer>
@@ -107,97 +176,111 @@ export const Form: FC<Props> = (props) => {
                 <p className="text-l font-bold ml-4">About</p>
                 <fieldset name="baseData" className="mt-2 ml-6 w-1/2">
                     <div className="flex flex-grow flex-wrap space-x-2 space-y-2 mr-10">
-                        <input onChange={event => handleBaseDataInput(event)} name="first_name" ref={register}
-                               className="ml-2 flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="First Name"></input>
-                        <input onChange={event => handleBaseDataInput(event)} name="last_name" ref={register}
-                               className="flex bg-gray-200 h-8 w-full" type="text"
-                               placeholder="Last Name"></input>
-                        <input onChange={event => handleBaseDataInput(event)} name="phone_number" ref={register}
-                               className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Phone Number"></input>
-                        <input onChange={event => handleBaseDataInput(event)} name="email" ref={register}
-                               className="flex bg-gray-200 h-8 w-full" type="text"
-                               placeholder="E-mail address"></input>
-                        <textarea onChange={event => handleBaseDataInput(event)} name="summary" ref={register}
-                                  className="flex bg-gray-200 w-full"
-                                  placeholder="Summary"></textarea>
+                        <BaseDataInputs document={props.document} onChange={handleBaseDataInput} errors={errors} register={register}/>
                     </div>
                 </fieldset>
                 <p className="text-l font-bold ml-4 mt-4">Education</p>
-                <fieldset className="mt-2 ml-6 w-1/2">
-                    <div className="flex flex-grow flex-wrap space-x-2 space-y-2 mr-10">
-                        <input name="institution" ref={register} className="ml-2 flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Institution"></input>
-                        <input name="faculty" ref={register} className="flex bg-gray-200 h-8 w-full" type="text"
-                               placeholder="Faculty"></input>
-                        <input name="field_of_study" ref={register} className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Field of Study"></input>
-                        <input name="education_level" ref={register} className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Education Level"></input>
-                        <input name="study_status" ref={register} className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Study status"></input>
-                        <input name="started_at" ref={register} className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Started at"></input>
-                        <input name="finished_at" ref={register} className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Ended at"></input>
-                    </div>
-                </fieldset>
+                <div>
+                    {inputFields.education.map((education, index) => {
+                        return (
+                            <div key={index}>
+                                <fieldset className="mt-2 ml-6 w-1/2 mb-8">
+                                    <div className="flex flex-grow flex-wrap space-x-2 space-y-2 mr-10">
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].institution`}
+                                               ref={register}
+                                               className="ml-2 flex bg-gray-200 h-8 w-full"
+                                               type="text"
+                                               placeholder="Institution"
+                                                value={props.document?.education[index].institution}/>
+                                        {errors[`education[${index}].institution`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].faculty`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="text"
+                                               placeholder="Faculty"
+                                               value={props.document?.education[index].faculty}/>
+                                        {errors[`education[${index}].faculty`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].field_of_study`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="text"
+                                               placeholder="Field of Study"
+                                               value={props.document?.education[index].field_of_study}/>
+                                        {errors[`education[${index}].field_of_study`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].level_of_education`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="text"
+                                               placeholder="Education Level"
+                                               value={props.document?.education[index].level_of_education}/>
+                                        {errors[`education[${index}].level_of_education`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].status`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="text"
+                                               placeholder="Study status"
+                                               value={props.document?.education[index].status}/>
+                                        {errors[`education[${index}].status`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].started_at`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="date"
+                                               placeholder="Started at"
+                                               value={props.document?.education[index].started_at}/>
+                                        {errors[`education[${index}].started_at`]?.message}
+
+                                        <input onChange={event => handleEducationInput(event)}
+                                               name={`education[${index}].finished_at`}
+                                               ref={register}
+                                               className="flex bg-gray-200 h-8 w-full"
+                                               type="date"
+                                               placeholder="Finished at"
+                                               value={props.document?.education[index].finished_at}/>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        )
+                    })}
+                    <Button onClick={handleAddEducation}>Add education</Button>
+                </div>
+
                 <p className="text-l font-bold ml-4 mt-4">Address</p>
                 <div className="mt-2 ml-6 w-1/2">
                     <fieldset className="flex flex-grow flex-wrap space-x-2 space-y-2 mr-10">
-                        <input onChange={event => handleAddressInput(event)} name="country" ref={register}
-                               className="ml-2 flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Country"></input>
-                        <input onChange={event => handleAddressInput(event)} name="postal_code" ref={register}
-                               className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="Postal code"></input>
-                        <input onChange={event => handleAddressInput(event)} name="city" ref={register}
-                               className="flex bg-gray-200 h-8 w-full" type="text"
-                               placeholder="City"></input>
-                        <input onChange={event => handleAddressInput(event)} name="street" ref={register}
-                               className="flex bg-gray-200 h-8 w-full" type="text"
-                               placeholder="Street"></input>
-                        <input onChange={event => handleAddressInput(event)} name="house_number" ref={register}
-                               className="flex bg-gray-200 h-8 w-full"
-                               type="text" placeholder="House number"></input>
+                        <AddressInputs document={props.document} onChange={handleAddressInput} register={register} errors={errors}/>
                     </fieldset>
                 </div>
                 <p className="text-l font-bold ml-4 mt-4">Work Experience</p>
-                {inputFields.jobs.map((job, index) => {
-                    return (
-                        <div key={index} className="mt-2 ml-6 w-1/2">
-                            <fieldset className="flex flex-grow flex-wrap space-x-2 space-y-2 mr-10 mb-10">
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="company_title" ref={register} className="ml-2 flex bg-gray-200 h-8 w-full"
-                                    type="text" placeholder="Company"></input>
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="position" ref={register} className="flex bg-gray-200 h-8 w-full" type="text"
-                                    placeholder="Position"></input>
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="description" ref={register} className="flex bg-gray-200 h-8 w-full"
-                                    type="text"
-                                    placeholder="Description"></input>
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="workload" ref={register} className="flex bg-gray-200 h-8 w-full" type="text"
-                                    placeholder="Workload"></input>
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="started_at" ref={register} className="flex bg-gray-200 h-8 w-full" type="text"
-                                    placeholder="Started at"></input>
-                                <input
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleWorkPlaceInput(event, index)}
-                                    name="ended_at" ref={register} className="flex bg-gray-200 h-8 w-full" type="text"
-                                    placeholder="Ended at"></input>
-                            </fieldset>
-                        </div>
-                    )
-                })}
-                <Button onClick={() => handleAddWorkplace()}>Add workplace</Button>
+                <div>
+                    {inputFields.jobs.map((job, index) => {
+                        return (
+                            <div key={index} className="mt-2 ml-6 w-1/2">
+                                <fieldset>
+                                    <WorkPlaceInputs
+                                        document={props.document}
+                                        onChange={handleWorkPlaceInput}
+                                        index={index}
+                                        errors={errors}
+                                        register={register}
+                                        responsibilities={job.job_responsibilities}
+                                        responsibilityHandler={(index) => handleAddJobResponsibility(index)}/>
+                                </fieldset>
+                            </div>
+                        )
+                    })}
+                    <Button onClick={handleAddWorkplace}>Add workplace</Button>
+                </div>
             </div>
         </form>
     )

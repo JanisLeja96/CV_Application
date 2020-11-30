@@ -1,19 +1,13 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {DocumentType} from "../../../types/DocumentType";
 import axios from 'axios';
-import {DocumentContext} from '../../../App';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faEye, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 import {Link} from "react-router-dom";
+import config from "./../../../config.json";
 
-type Props = {
-    focused: () => void,
-    notFocused: () => void
-}
 
-export const DocumentList = (props: Props) => {
-    const {document, setDocument} = useContext(DocumentContext);
-
+export const DocumentList = () => {
     const [documents, setDocuments] = useState<DocumentType[] | null>(null);
     const [loaded, setLoaded] = useState(false);
 
@@ -23,7 +17,7 @@ export const DocumentList = (props: Props) => {
     }, [loaded])
 
     const loadDocuments = () => {
-        axios.get('http://localhost:8000/api/documents')
+        axios.get(`${config.SERVER_URL}`)
             .then((res) => {
                 setDocuments(res.data.data);
 
@@ -57,11 +51,6 @@ export const DocumentList = (props: Props) => {
                     return (
                         <tr
                             key={document.id}
-                            onFocus={() => {
-                                props.focused()
-                                setDocument(document);
-                            }}
-                            onBlur={() => props.notFocused()}
                             className="border-top border-gray-800 h-16"
                             tabIndex={0}>
                             <td className="w-36 space-x-2">

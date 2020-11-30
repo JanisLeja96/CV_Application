@@ -103,24 +103,28 @@ class CvRepository
 
     private function setAchievements($job, CvJob $cvJob, array $cvJobs): array
     {
-        foreach ($job['job_achievements'] as $achievement) {
-            $cvJobAchievement = new CvJobAchievement();
-            $cvJobAchievement->fill($achievement);
-            $cvJobAchievement->job_id = $cvJob->id;
-            $cvJobAchievement->save();
-            $cvJobs['achievements'][] = $cvJobAchievement;
+        if (isset($job['job_achievements'])) {
+            foreach ($job['job_achievements'] as $achievement) {
+                $cvJobAchievement = new CvJobAchievement();
+                $cvJobAchievement->fill($achievement);
+                $cvJobAchievement->job_id = $cvJob->id;
+                $cvJobAchievement->save();
+                $cvJobs['achievements'][] = $cvJobAchievement;
+            }
         }
         return $cvJobs;
     }
 
     private function setResponsibilities($job, CvJob $cvJob, array $cvJobs): array
     {
-        foreach ($job['job_responsibilities'] as $responsibility) {
-            $cvJobResponsibility = new CvJobResponsibility();
-            $cvJobResponsibility->fill($responsibility);
-            $cvJobResponsibility->job_id = $cvJob->id;
-            $cvJobResponsibility->save();
-            $cvJobs['job_responsibilities'][] = $cvJobResponsibility;
+        if (isset($job['job_responsibilities'])) {
+            foreach ($job['job_responsibilities'] as $responsibility) {
+                $cvJobResponsibility = new CvJobResponsibility();
+                $cvJobResponsibility->fill($responsibility);
+                $cvJobResponsibility->job_id = $cvJob->id;
+                $cvJobResponsibility->save();
+                $cvJobs['job_responsibilities'][] = $cvJobResponsibility;
+            }
         }
         return $cvJobs;
     }

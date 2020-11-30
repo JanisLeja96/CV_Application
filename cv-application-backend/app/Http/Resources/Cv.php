@@ -21,7 +21,6 @@ class Cv extends JsonResource
             'education' => $this->education->all(),
             'address' => $this->address,
             'jobs' => $this->jobs->load([
-                'jobInfo',
                 'jobResponsibilities',
                 'jobAchievements'
             ]),

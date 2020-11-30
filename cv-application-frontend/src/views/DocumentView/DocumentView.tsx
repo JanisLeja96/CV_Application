@@ -6,6 +6,7 @@ import {TopPanel} from "../../components/TopPanel/TopPanel";
 import {DocumentButtons} from "../../components/DocumentView/DocumentButtons/DocumentButtons";
 import './DocumentView.css';
 import {Document} from "../../components/DocumentView/Document/Document";
+import config from "../../config.json";
 
 export const DocumentView: FC = (props) => {
     const {id} = useParams<{ id: string }>();
@@ -16,7 +17,7 @@ export const DocumentView: FC = (props) => {
     }, []);
 
     const fetchDocument = () => {
-        axios.get(`http://localhost:8000/api/documents/${id}`)
+        axios.get(`${config.SERVER_URL}${id}`)
             .then((res) => {
                 setDocument(res.data.data);
                 console.log(document);

@@ -11,6 +11,14 @@ export const Document = (props: Props) => {
     const {first_name, last_name, phone_number, email, summary} = document.base_data;
     const {country, street, city, house_number, postal_code} = document.address;
 
+    const getYears = (started_at: string, ended_at?: string) => {
+        const startingYear = new Date(started_at).getFullYear();
+        if (ended_at) {
+            return `${startingYear} -${new Date(ended_at).getFullYear()}`;
+        }
+        return startingYear;
+    }
+
 
     return (
         <table className="w-11/12 mr-4 ml-4">
@@ -24,10 +32,10 @@ export const Document = (props: Props) => {
                     </div>
                     <div className="space-x-4 mt-2 mb-2 text-sm">
                         <span>{email}</span>
-                        <span className="h-4 border-l-2 border-black"></span>
+                        <span className="h-4 border-l-2 border-black"/>
                         <span>{phone_number}</span>
-                        <span className="h-4 border-l-2 border-black"></span>
-                        <span>{`${country}, ${city}, ${street}-${house_number}, ${postal_code}`}</span>
+                        <span className="h-4 border-l-2 border-black"/>
+                        <span>{`${country}, ${city}, ${street} ${house_number}, ${postal_code}`}</span>
                     </div>
                 </td>
             </tr>
@@ -50,19 +58,21 @@ export const Document = (props: Props) => {
                         return (
                             <div>
                                 <span className="text-xl font-bold">{job.company_title}</span>
-                                <span>{`, ${job.position} - ${job.workload}`}</span><br/>
+                                <span>{`, ${job.position} - ${job.workload}: ${getYears(job.started_at, job.ended_at)}`}</span><br/>
                                 <span>{job.description}</span>
                                 <ul className="list-disc ml-4 text-sm">
-                                    <span>Responsibilities:</span>
-                                    {job.job_responsibilities.map((responsibility) => {
-                                        return (
-                                            <li className="ml-4">{responsibility.responsibility}</li>
-                                        )
+                                    {job.job_responsibilities.length > 0 && <span>Responsibilities:</span>}
+                                    {job.job_responsibilities.map(({responsibility}) => {
+                                        if (responsibility) {
+                                            return (
+                                                <li className="ml-4">{responsibility}</li>
+                                            )
+                                        }
                                     })}
-                                    <span>Achievements:</span>
-                                    {job.job_achievements.map((achievement) => {
+                                    {job.job_achievements.length > 0 && <span>Achievements:</span>}
+                                    {job.job_achievements.map(({achievement}) => {
                                         return (
-                                            <li className="ml-4">{achievement.achievement}</li>
+                                            <li className="ml-4">{achievement}</li>
                                         )
                                     })}
                                 </ul>
@@ -79,15 +89,14 @@ export const Document = (props: Props) => {
                 <td>
                     {document.education.map((education) => {
                         return (
-                            <div>
+                            <div className="mt-6">
                                 <span className="text-lg font-bold">{education.level_of_education}: </span>
                                 <span> {education.field_of_study}</span><br/>
                                 <span>{education.institution}, {education.faculty}</span><br/>
-                                <span>2015-2018</span>
+                                <span>{}</span>
                             </div>
                         )
                     })}
-
                 </td>
             </tr>
         </table>

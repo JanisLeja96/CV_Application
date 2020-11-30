@@ -22,7 +22,20 @@
     "react-scripts": "4.0.0",
     "react-toastify": "^6.1.0",
     "typescript": "~4.0.5",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "@types/axios": "^0.14.0",
+    "@types/react-bootstrap": "^0.32.24",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.6",
+    "autoprefixer": "^9.8.6",
+    "axios": "^0.21.0",
+    "postcss": "^8.1.9",
+    "postcss-cli": "^8.1.0",
+    "react-bootstrap": "^1.4.0",
+    "react-hook-form": "^6.11.5",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "tailwindcss": "^2.0.1"
   },
   "scripts": {
     "start": "npm run watch:css && react-scripts start",
@@ -50,18 +63,6 @@
     ]
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/react-bootstrap": "^0.32.24",
-    "@types/react-router": "^5.1.8",
-    "@types/react-router-dom": "^5.1.6",
-    "autoprefixer": "^9.8.6",
-    "axios": "^0.21.0",
-    "postcss": "^8.1.9",
-    "postcss-cli": "^8.1.0",
-    "react-bootstrap": "^1.4.0",
-    "react-hook-form": "^6.11.5",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "tailwindcss": "^2.0.1"
+
   }
 }

@@ -28,15 +28,15 @@ class StoreRequest extends FormRequest
 
             'base_data' => 'required',
                 'base_data.summary' => 'required|max:255',
-                'base_data.first_name' => 'required|max:36|alpha',
-                'base_data.last_name' => 'required|max:36|alpha',
-                'base_data.email' => 'required|max:48',
-                'base_data.phone_number' => 'required|max:24',
+                'base_data.first_name' => 'required|max:18|alpha',
+                'base_data.last_name' => 'required|max:18|alpha',
+                'base_data.email' => 'required',
+                'base_data.phone_number' => 'required|max:12',
 
             'address' => 'required',
-                'address.country' => 'required|max:255|alpha',
+                'address.country' => 'required|max:255',
                 'address.postal_code' => 'required|max:16',
-                'address.city' => 'required|max:255|alpha',
+                'address.city' => 'required|max:255',
                 'address.street' => 'required|max:255',
                 'address.house_number' => 'required|max:16',
 
